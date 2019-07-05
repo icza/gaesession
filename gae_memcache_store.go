@@ -65,7 +65,6 @@ Check out the GAE session demo application which shows how to use it properly:
 https://github.com/icza/gaesession/blob/master/_gae_session_demo/gae_session_demo.go
 
 */
-
 package gaesession
 
 import (
