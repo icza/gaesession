@@ -160,16 +160,16 @@ func (s *memcacheStore) Get(id string) session.Session {
 
 	// Next check in Memcache
 	var err error
-	var sess *sessionImpl
+	var sess session.Session
 
 	for i := 0; i < s.retries; i++ {
-		var sess_ sessionImpl
-		_, err = s.codec.Get(s.ctx, s.keyPrefix+id, &sess_)
+		tempSess := session.NewSession()
+		_, err = s.codec.Get(s.ctx, s.keyPrefix+id, tempSess)
 		if err == memcache.ErrCacheMiss {
 			break // It's not in the Memcache (e.g. invalid sess ID or was removed from Memcache by AppEngine)
 		}
 		if err == nil {
-			sess = &sess_
+			sess = tempSess
 			break
 		}
 		// Service error? Retry..
@@ -198,11 +198,11 @@ func (s *memcacheStore) Get(id string) session.Session {
 				datastore.Delete(s.ctx, key) // Omitting error check...
 				return nil
 			}
-			var sess_ sessionImpl
-			if err = s.codec.Unmarshal(e.Value, &sess_); err != nil {
+			tempSess := session.NewSession()
+			if err = s.codec.Unmarshal(e.Value, tempSess); err != nil {
 				break // Invalid data in stored session entity...
 			}
-			sess = &sess_
+			sess = tempSess
 			break
 		}
 	}
@@ -213,8 +213,7 @@ func (s *memcacheStore) Get(id string) session.Session {
 	}
 
 	// Yes! We have it!
-	// "Actualize" it, but first, Mutex is not marshaled, so create a new one:
-	sess.mux = &sync.RWMutex{}
+	// "Actualize" it:
 	sess.Access()
 	s.sessions[id] = sess
 	return sess
