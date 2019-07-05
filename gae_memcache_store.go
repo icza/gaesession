@@ -9,7 +9,7 @@ or asynchronously (in another goroutine).
 
 Limitations based on GAE Memcache:
 
-- Since session ids are used in the Memcache keys, session ids can't be longer than 250 chars (bytes, but with Base64 charset it's the same).
+- Since session IDs are used in the Memcache keys, session IDs can't be longer than 250 chars (bytes, but with Base64 charset it's the same).
 If you also specify a key prefix (in MemcacheStoreOptions), that also counts into it.
 
 - The size of a Session cannot be larger than 1 MB (marshalled into a byte slice).
@@ -43,7 +43,7 @@ import (
 type memcacheStore struct {
 	ctx context.Context // Appengine context used when accessing the Memcache
 
-	keyPrefix string // Prefix to use in front of session ids to construct Memcache key
+	keyPrefix string // Prefix to use in front of session IDs to construct Memcache key
 	retries   int    // Number of retries to perform in case of general Memcache failures
 
 	codec memcache.Codec // Codec used to marshal and unmarshal a Session to a byte slice
@@ -53,7 +53,7 @@ type memcacheStore struct {
 	dsEntityName       string // Name of the datastore entity to use to save sessions
 
 	// Map of sessions (mapped from ID) that were accessed using this store; usually it will only be 1.
-	// It is also used as a cache, should the user call Get() with the same id multiple times.
+	// It is also used as a cache, should the user call Get() with the same ID multiple times.
 	sessions map[string]session.Session
 
 	mux *sync.RWMutex // mutex to synchronize access to sessions
@@ -63,8 +63,8 @@ type memcacheStore struct {
 // All fields are optional; default value will be used for any field that has the zero value.
 type MemcacheStoreOptions struct {
 	// Prefix to use when storing sessions in the Memcache, cannot contain a null byte
-	// and cannot be longer than 250 chars (bytes) when concatenated with the session id; default value is the empty string
-	// The Memcache key will be this prefix and the session id concatenated.
+	// and cannot be longer than 250 chars (bytes) when concatenated with the session ID; default value is the empty string
+	// The Memcache key will be this prefix and the session ID concatenated.
 	KeyPrefix string
 
 	// Number of retries to perform if Memcache operations fail due to general service error;
@@ -95,8 +95,8 @@ type MemcacheStoreOptions struct {
 	DSEntityName string
 }
 
-// SessEntity models the session entity saved to Datastore.
-// The Key is the session id.
+// SessEntity models the session entity saved in Datastore.
+// The Key is the session ID.
 type SessEntity struct {
 	Expires time.Time `datastore:"exp"`
 	Value   []byte    `datastore:"val"`
@@ -148,7 +148,7 @@ func NewMemcacheStoreOptions(ctx context.Context, o *MemcacheStoreOptions) sessi
 // Get is to implement Store.Get().
 // Important! Since sessions are marshalled and stored in the Memcache,
 // the mutex of the Session (Session.RWMutex()) will be different for each
-// Session value (even though they might have the same session id)!
+// Session value (even though they might have the same session ID)!
 func (s *memcacheStore) Get(id string) session.Session {
 	s.mux.RLock()
 	defer s.mux.RUnlock()
@@ -166,7 +166,7 @@ func (s *memcacheStore) Get(id string) session.Session {
 		var sess_ sessionImpl
 		_, err = s.codec.Get(s.ctx, s.keyPrefix+id, &sess_)
 		if err == memcache.ErrCacheMiss {
-			break // It's not in the Memcache (e.g. invalid sess id or was removed from Memcache by AppEngine)
+			break // It's not in the Memcache (e.g. invalid sess ID or was removed from Memcache by AppEngine)
 		}
 		if err == nil {
 			sess = &sess_
@@ -177,7 +177,7 @@ func (s *memcacheStore) Get(id string) session.Session {
 
 	if sess == nil {
 		if err != nil && err != memcache.ErrCacheMiss {
-			log.Errorf(s.ctx, "Failed to get session from memcache, id: %s, error: %v", id, err)
+			log.Errorf(s.ctx, "Failed to get session from memcache, ID: %s, error: %v", id, err)
 		}
 
 		// Ok, we didn't get it from Memcache (either was not there or Memcache service is unavailable).
@@ -208,7 +208,7 @@ func (s *memcacheStore) Get(id string) session.Session {
 	}
 
 	if sess == nil {
-		log.Errorf(s.ctx, "Failed to get session from datastore, id: %s, error: %v", id, err)
+		log.Errorf(s.ctx, "Failed to get session from datastore, ID: %s, error: %v", id, err)
 		return nil
 	}
 
@@ -247,7 +247,7 @@ func (s *memcacheStore) setMemcacheSession(sess session.Session) (success bool) 
 		}
 	}
 
-	log.Errorf(s.ctx, "Failed to add session to memcache, id: %s, error: %v", sess.ID(), err)
+	log.Errorf(s.ctx, "Failed to add session to memcache, ID: %s, error: %v", sess.ID(), err)
 	return false
 }
 
@@ -269,7 +269,7 @@ func (s *memcacheStore) Remove(sess session.Session) {
 			return
 		}
 	}
-	log.Errorf(s.ctx, "Failed to remove session from memcache, id: %s, error: %v", sess.ID(), err)
+	log.Errorf(s.ctx, "Failed to remove session from memcache, ID: %s, error: %v", sess.ID(), err)
 }
 
 // Close is to implement Store.Close().
