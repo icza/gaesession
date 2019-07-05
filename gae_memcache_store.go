@@ -120,7 +120,7 @@ const defaultDSEntityName = "sess_" // Default value of DSEntityName.
 //
 // Important! Since accessing the Memcache relies on Appengine Context
 // which is bound to an http.Request, the returned Store can only be used for the lifetime of a request!
-func NewMemcacheStoreOptions(ctx context.Context, o *MemcacheStoreOptions) Store {
+func NewMemcacheStoreOptions(ctx context.Context, o *MemcacheStoreOptions) session.Store {
 	s := &memcacheStore{
 		ctx:                ctx,
 		keyPrefix:          o.KeyPrefix,
