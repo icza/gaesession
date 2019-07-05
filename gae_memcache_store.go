@@ -1,7 +1,5 @@
 /*
 
-Google App Engine support
-
 Package gaesession provides Google App Engine (GAE) support for github.com/icza/session.
 
 The implementation stores sessions in the Memcache and also saves sessions in the Datastore as a backup
