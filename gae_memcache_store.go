@@ -24,7 +24,7 @@ https://github.com/icza/gaesession/blob/master/_gae_session_demo/gae_session_dem
 
 */
 
-package session
+package gaesession
 
 import (
 	"net/http"
@@ -54,7 +54,7 @@ type memcacheStore struct {
 
 	// Map of sessions (mapped from ID) that were accessed using this store; usually it will only be 1.
 	// It is also used as a cache, should the user call Get() with the same id multiple times.
-	sessions map[string]Session
+	sessions map[string]session.Session
 
 	mux *sync.RWMutex // mutex to synchronize access to sessions
 }
@@ -128,7 +128,7 @@ func NewMemcacheStoreOptions(ctx context.Context, o *MemcacheStoreOptions) sessi
 		onlyMemcache:       o.OnlyMemcache,
 		asyncDatastoreSave: o.AsyncDatastoreSave,
 		dsEntityName:       o.DSEntityName,
-		sessions:           make(map[string]Session, 2),
+		sessions:           make(map[string]session.Session, 2),
 		mux:                &sync.RWMutex{},
 	}
 	if s.retries <= 0 {
