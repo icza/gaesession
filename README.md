@@ -46,6 +46,6 @@ It can be registered like this:
     http.HandleFunc("/demo/purge", gaesession.PurgeExpiredSessFromDSFunc(""))
 
 Check out the GAE session demo application which shows how it can be used.
-[cron.yaml](https://github.com/icza/gaesession/blob/master/gae_session_demo/cron.yaml) file of the demo shows how a cron job can be defined to purge expired sessions.
+[cron.yaml](https://github.com/icza/gaesession/blob/master/_gae_session_demo/cron.yaml) file of the demo shows how a cron job can be defined to purge expired sessions.
 
 Check out the [GAE session demo application](https://github.com/icza/gaesession/blob/master/_gae_session_demo/gae_session_demo.go) which shows how to use this in action.
