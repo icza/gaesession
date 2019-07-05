@@ -110,7 +110,7 @@ var zeroMemcacheStoreOptions = new(MemcacheStoreOptions)
 //
 // Important! Since accessing the Memcache relies on Appengine Context
 // which is bound to an http.Request, the returned Store can only be used for the lifetime of a request!
-func NewMemcacheStore(ctx context.Context) Store {
+func NewMemcacheStore(ctx context.Context) session.Store {
 	return NewMemcacheStoreOptions(ctx, zeroMemcacheStoreOptions)
 }
 
