@@ -1,5 +1,4 @@
 /*
-
 Package gaesession provides Google App Engine (GAE) support for github.com/icza/session.
 
 The implementation stores sessions in the Memcache and also saves sessions in the Datastore as a backup
@@ -17,21 +16,21 @@ the session manager to which you passed the store (preferably with the defer sta
 So in each request handling we have to create a new session manager using a new Store, and we can use the session manager
 to do session-related tasks, something like this:
 
-    ctx := appengine.NewContext(r)
-    sessmgr := session.NewCookieManager(gaesession.NewMemcacheStore(ctx))
-    defer sessmgr.Close() // This will ensure changes made to the session are auto-saved
-                          // in Memcache (and optionally in the Datastore).
+	ctx := appengine.NewContext(r)
+	sessmgr := session.NewCookieManager(gaesession.NewMemcacheStore(ctx))
+	defer sessmgr.Close() // This will ensure changes made to the session are auto-saved
+	                      // in Memcache (and optionally in the Datastore).
 
-    sess := sessmgr.Get(r) // Get current session
-    if sess != nil {
-        // Session exists, do something with it.
-        ctx.Infof("Count: %v", sess.Attr("Count"))
-    } else {
-        // No session yet, let's create one and add it:
-        sess = session.NewSession()
-        sess.SetAttr("Count", 1)
-        sessmgr.Add(sess, w)
-    }
+	sess := sessmgr.Get(r) // Get current session
+	if sess != nil {
+	    // Session exists, do something with it.
+	    ctx.Infof("Count: %v", sess.Attr("Count"))
+	} else {
+	    // No session yet, let's create one and add it:
+	    sess = session.NewSession()
+	    sess.SetAttr("Count", 1)
+	    sessmgr.Add(sess, w)
+	}
 
 Expired sessions are not automatically removed from the Datastore. To remove expired sessions, the package
 provides a PurgeExpiredSessFromDSFunc() function which returns an http.HandlerFunc.
@@ -41,13 +40,12 @@ As cron handlers may run up to 10 minutes, the returned handler will stop at 8 m
 to complete safely even if there are more expired, undeleted sessions.
 It can be registered like this:
 
-    http.HandleFunc("/demo/purge", gaesession.PurgeExpiredSessFromDSFunc(""))
+	http.HandleFunc("/demo/purge", gaesession.PurgeExpiredSessFromDSFunc(""))
 
 Check out the GAE session demo application which shows how it can be used.
 cron.yaml file of the demo shows how a cron job can be defined to purge expired sessions.
 
 https://github.com/icza/session/blob/master/_gae_session_demo/gae_session_demo.go
-
 
 Limitations based on GAE Memcache:
 
@@ -63,21 +61,20 @@ the session manager to which you passed the store (preferably with the defer sta
 Check out the GAE session demo application which shows how to use it properly:
 
 https://github.com/icza/gaesession/blob/master/_gae_session_demo/gae_session_demo.go
-
 */
 package gaesession
 
 import (
+	"google.golang.org/appengine/v2"
+	"google.golang.org/appengine/v2/datastore"
+	"google.golang.org/appengine/v2/log"
+	"google.golang.org/appengine/v2/memcache"
 	"net/http"
 	"sync"
 	"time"
 
 	"github.com/icza/session"
 	"golang.org/x/net/context"
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/log"
-	"google.golang.org/appengine/memcache"
 )
 
 // A Google App Engine Memcache session store implementation.
@@ -371,7 +368,7 @@ func (s *memcacheStore) saveToDatastore() {
 // The response of the handler func is a JSON text telling if the handler was able to delete all expired sessions,
 // or that it was finished early due to the time. Examle of a respone where all expired sessions were deleted:
 //
-//     {"completed":true}
+//	{"completed":true}
 func PurgeExpiredSessFromDSFunc(dsEntityName string) http.HandlerFunc {
 	if dsEntityName == "" {
 		dsEntityName = defaultDSEntityName
