@@ -65,16 +65,16 @@ https://github.com/icza/gaesession/blob/master/_gae_session_demo/gae_session_dem
 package gaesession
 
 import (
+	"google.golang.org/appengine/v2"
+	"google.golang.org/appengine/v2/datastore"
+	"google.golang.org/appengine/v2/log"
+	"google.golang.org/appengine/v2/memcache"
 	"net/http"
 	"sync"
 	"time"
 
 	"github.com/icza/session"
 	"golang.org/x/net/context"
-	"google.golang.org/appengine"
-	"google.golang.org/appengine/datastore"
-	"google.golang.org/appengine/log"
-	"google.golang.org/appengine/memcache"
 )
 
 // A Google App Engine Memcache session store implementation.
