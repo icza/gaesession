@@ -1,4 +1,4 @@
-module github.com/icza/v2/gaesession
+module github.com/icza/gaesession/v2
 
 go 1.15
 
@@ -10,5 +10,5 @@ require (
 
 require (
 	github.com/icza/mighty v0.0.0-20230330133200-c4b03a294ed8 // indirect
-	google.golang.org/appengine v1.6.7
+	google.golang.org/appengine v1.6.7 // indirect
 )

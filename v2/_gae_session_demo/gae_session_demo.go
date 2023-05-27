@@ -9,13 +9,13 @@ Code demonstrates session access, creation and removal.
 package main
 
 import (
+	"github.com/icza/gaesession/v2"
 	"google.golang.org/appengine/v2"
 	"html/template"
 	"log"
 	"net/http"
 
 	"github.com/icza/session"
-	"github.com/icza/v2/gaesession"
 )
 
 func init() {
